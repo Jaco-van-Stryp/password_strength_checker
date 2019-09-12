@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "937405289111",
+    "firebase_url": "https://password-strength-checke-fd5d1.firebaseio.com",
+    "project_id": "password-strength-checke-fd5d1",
+    "storage_bucket": "password-strength-checke-fd5d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937405289111:android:abf42b6271f0ae952e4fd2",
+        "android_client_info": {
+          "package_name": "com.jaxifysoftware.password_strength_checker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937405289111-h7nsrbsqp7bj2vk59v093pld4bgsppld.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jaxifysoftware.password_strength_checker",
+            "certificate_hash": "dce5c2469be1d48defd78fa0bd039f78d17c70ba"
+          }
+        },
+        {
+          "client_id": "937405289111-ekd53snchrh3bc6b8iv4qp5c2trsvkau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_Ncu9THYgVZXt4wG-sZvwojxi0TRH_7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "937405289111-ekd53snchrh3bc6b8iv4qp5c2trsvkau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
