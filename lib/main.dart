@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:password_strength/password_strength.dart';
 import 'package:random_string/random_string.dart';
 import 'package:firebase_admob/firebase_admob.dart';
+import 'PassGuessAlgorithms.dart';
+import 'ImprovePass.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() => runApp(MyApp());
 
@@ -40,6 +43,17 @@ class _MyHomePageState extends State<MyHomePage> {
   BannerAd _bannerAd;
   InterstitialAd _interstitialAd;
 
+//Navigations
+  Future navigateToPageGuesser(context) async {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => PassGuessAlgorithms()));
+  }
+
+  Future navigateToPageImprove(context) async {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ImprovePass()));
+  }
+
   BannerAd createBannerAd() {
     return BannerAd(
         adUnitId: 'ca-app-pub-2887967406057408/4600454367',
@@ -71,9 +85,9 @@ class _MyHomePageState extends State<MyHomePage> {
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       if (event == RewardedVideoAdEvent.rewarded) {
+        rewarded = true;
         setState(() {
           // Here, apps should update state to reflect the reward.
-          rewarded = true;
           adText = "";
           clearAds();
         });
@@ -99,28 +113,67 @@ class _MyHomePageState extends State<MyHomePage> {
             style: TextStyle(fontSize: 25),
           ),
           Divider(color: Colors.white),
-          Expanded(child: MaterialButton(
-            child: Text(
-              "Attempt To Guess My Password",
-              style: TextStyle(color: Colors.white),
-            ),
-            color: Colors.greenAccent,
-            onPressed: () {
-              crackPass(passwordContents);
-            },
-          ),),
-          Expanded(child: MaterialButton(
-            child: Text(
-              "Improve My Password",
-              style: TextStyle(color: Colors.white),
-            ),
-            color: Colors.greenAccent,
-            onPressed: () {
-              crackPass(passwordContents);
-            },
-          ),)
-          
-      
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: MaterialButton(
+                  child: Text(
+                    "Attempt To Guess Password",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  color: Colors.red,
+                  onPressed: () {
+                    if (passwordContents == "") {
+                      Fluttertoast.showToast(
+                          msg: "Please Enter A Password That We Should Guess",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIos: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                    } else{
+                    navigateToPageGuesser(context);
+
+                    }
+                  },
+                ),
+              )
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: MaterialButton(
+                  child: Text(
+                    "Improve Password",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  color: Colors.red,
+                  onPressed: () {
+                    navigateToPageImprove(context);
+                  },
+                ),
+              )
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: MaterialButton(
+                  child: Text(
+                    "Generate Strongest Password",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  color: Colors.red,
+                  onPressed: () {},
+                ),
+              )
+            ],
+          )
         ],
       );
     } else {
@@ -131,7 +184,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         color: Colors.blueAccent,
         onPressed: () {
-          RewardedVideoAd.instance.show();
+          setState(() {
+            RewardedVideoAd.instance.show();
+          });
         },
       );
     }
@@ -153,15 +208,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: ListView(
+        children: <Widget>[
+          Column(
             children: <Widget>[
+              Divider(color: Colors.white),
               Text(
                 'Enter a password',
+                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.display1,
               ),
               Divider(
@@ -221,7 +278,9 @@ class _MyHomePageState extends State<MyHomePage> {
               rewardAdButton(),
             ],
           ),
-        ));
+        ],
+      ),
+    );
   }
 
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
