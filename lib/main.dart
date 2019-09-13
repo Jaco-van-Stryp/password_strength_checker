@@ -4,7 +4,8 @@ import 'package:random_string/random_string.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'PassGuessAlgorithms.dart';
 import 'ImprovePass.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:toast/toast.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,6 +14,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+
       title: 'Password Strength Checker',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -31,12 +34,32 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+class PasswordContents {
+  final LocalStorage storage = new LocalStorage('TempPass');
+
+  void setPasswordContents(String passwordC) {
+    storage.setItem('TempPass', passwordC);
+  }
+
+  String getPasswordContents() {
+    try
+    {
+    return storage.getItem('TempPass');
+
+    } catch (e)
+    {
+        return "";
+    }
+  }
+}
+
 class _MyHomePageState extends State<MyHomePage> {
   //Declarations
+  var passClass = PasswordContents();
+  String adText = "Disable Ad's & Unlock Additional Features [Free]";
   int totalClicks = 10;
   String passwordStrength = " ";
   String genPass = "";
-  String passwordContents = "";
   int passwordCrackingAttempts = 0;
   bool rewarded;
 
@@ -75,6 +98,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    PasswordContents().setPasswordContents("password");
+
     FirebaseAdMob.instance
         .initialize(appId: 'ca-app-pub-2887967406057408~1235924424');
     //Change appId With Admob Id
@@ -124,18 +149,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   color: Colors.red,
                   onPressed: () {
-                    if (passwordContents == "") {
-                      Fluttertoast.showToast(
-                          msg: "Please Enter A Password That We Should Guess",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIos: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                    } else{
-                    navigateToPageGuesser(context);
-
+                    if (PasswordContents().getPasswordContents() == "") {
+                      Toast.show(
+                          "You need to enter a password to do this!", context,
+                          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                    } else {
+                      navigateToPageGuesser(context);
                     }
                   },
                 ),
@@ -147,33 +166,27 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                 child: MaterialButton(
                   child: Text(
-                    "Improve Password",
+                    "Password Rating Test",
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   color: Colors.red,
                   onPressed: () {
+                    if(PasswordContents().getPasswordContents() == "")
+                    {
+                       Toast.show(
+                          "You need to enter a password to do this!", context,
+                          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                    }
+                    else{
                     navigateToPageImprove(context);
+
+                    }
                   },
                 ),
               )
             ],
           ),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: MaterialButton(
-                  child: Text(
-                    "Generate Strongest Password",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  color: Colors.red,
-                  onPressed: () {},
-                ),
-              )
-            ],
-          )
         ],
       );
     } else {
@@ -186,13 +199,13 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () {
           setState(() {
             RewardedVideoAd.instance.show();
+            adText = "Unlock Features";
           });
         },
       );
     }
   }
 
-  String adText = "Disable Ad's & Unlock Additional Features [Free]";
   void clearAds() {
     _bannerAd.dispose();
     _interstitialAd.dispose();
@@ -202,11 +215,14 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     _bannerAd.dispose();
     _interstitialAd.dispose();
+    final LocalStorage storage = new LocalStorage('TempPass');
+    storage.deleteItem("TempPass");
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -227,7 +243,7 @@ class _MyHomePageState extends State<MyHomePage> {
               TextField(
                 textAlign: TextAlign.center,
                 onChanged: (text) {
-                  passwordContents = text;
+                  passClass.setPasswordContents(text);
                   refreshPasswordStrength(text);
                 },
                 autofocus: true,
@@ -321,9 +337,5 @@ class _MyHomePageState extends State<MyHomePage> {
           temp.toInt().toString() +
           "% Strength)";
     });
-  }
-
-  void crackPass(String passwordContents) {
-    passwordCrackingAttempts = 0;
   }
 }
