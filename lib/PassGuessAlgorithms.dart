@@ -94,6 +94,7 @@ class _PassGuessAlgorithmsState extends State<PassGuessAlgorithms> {
       } else {
         maintimer = Timer.periodic(Duration(milliseconds: 1), (timer) {
           guess();
+          print("Guessing now...");
         });
       }
     } else {
