@@ -170,6 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
         AdDisplayInfo().writeCounter(1);
         setState(() {
           // Here, apps should update state to reflect the reward.
+          rewarded = true;
           adText = "Unlock Features";
         });
       }
