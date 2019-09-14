@@ -35,7 +35,8 @@ class _PasswordShuffleState extends State<PasswordShuffle> {
   String alphValue = "";
   String strength = "";
   String ratingTest = "";
-
+  String len = "";
+  String totalNumbers = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +71,9 @@ class _PasswordShuffleState extends State<PasswordShuffle> {
                       "%";
                   ratingTest =
                       "Password Quality - " + qualityTest(actualPassword);
+                  len = "Password Length - " + actualPassword.length.toString();
+                  totalNumbers =
+                      "Total Numbers - " + totalNum(actualPassword).toString();
                 });
               },
               color: Colors.redAccent,
@@ -88,6 +92,10 @@ class _PasswordShuffleState extends State<PasswordShuffle> {
             fancyText(strength),
             fancyDivider(),
             fancyText(ratingTest),
+            fancyDivider(),
+            fancyText(len),
+            fancyDivider(),
+            fancyText(totalNumbers),
             fancyDivider(),
 
             Padding(padding: EdgeInsets.all(48.0)), //* Required For Banner Ad
@@ -220,7 +228,20 @@ class _PasswordShuffleState extends State<PasswordShuffle> {
         " / 5 ] (" +
         (rating / 5 * 100).toStringAsFixed(0) +
         "%)";
-  }//End methods
+  }
+
+  int totalNum(String input) {
+    int numbers = 0;
+
+    for (int i = 0; i < input.length; i++) {
+      if (isNumeric(input[i]) == true) {
+        numbers++;
+      }
+    }
+    return numbers;
+  }
+
+  //End methods
 
   bool isNumeric(String str) {
     if (str == null) {
