@@ -220,7 +220,7 @@ class _PasswordShuffleState extends State<PasswordShuffle> {
         " / 5 ] (" +
         (rating / 5 * 100).toStringAsFixed(0) +
         "%)";
-  }
+  }//End methods
 
   bool isNumeric(String str) {
     if (str == null) {
