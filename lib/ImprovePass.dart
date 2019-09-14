@@ -5,7 +5,7 @@ import 'main.dart';
 import 'localPasswords.dart';
 
 class ImprovePass extends StatelessWidget {
-  String password = PasswordContents().getPasswordContents();
+  final String password = PasswordContents().getPasswordContents();
 
   Widget fancyText(String text) {
     return Text(
@@ -50,12 +50,13 @@ class ImprovePass extends StatelessWidget {
     int rating = 0;
     double strength = estimatePasswordStrength(password);
     double temp = strength * 100;
-    String quality =
-        "\nYour Selected Password: " + password + "\n\nQuality Test - Scroll Down For More!\n\n";
+    String quality = "\nYour Selected Password: " +
+        password +
+        "\n\nQuality Test - Scroll Down For More!\n\n";
     if (temp.toInt() >= 85) {
       quality += "\nThis password Has A Strength Rating of " +
           temp.toInt().toString() +
-          "% which is above average - ✔️";
+          "% which is above average - ✔️ ";
       rating++;
     } else {
       quality += "\nThis password Has A Strength Rating of " +
@@ -126,10 +127,10 @@ class ImprovePass extends StatelessWidget {
     return quality;
   }
 
-  bool isNumeric(String s) {
-    if (s == null) {
+  bool isNumeric(String str) {
+    if (str == null) {
       return false;
     }
-    return double.parse(s, (e) => null) != null;
+    return double.tryParse(str) != null;
   }
 }

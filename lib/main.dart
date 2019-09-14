@@ -53,16 +53,16 @@ class AdDisplayInfo {
 
   Future<File> writeCounter(int counter) async {
     try {
-final file = await _localFile;
+      final file = await _localFile;
 
-    // Write the file.
-    print("DEBUG - Successfully Written To file");
-    file.writeAsString('$counter');
-    } on Exception catch(e)
-    {
-      print ("Something went wrong");
+      // Write the file.
+      print("DEBUG - Successfully Written To file");
+      return file.writeAsString('$counter');
+    } on Exception catch (e) {
+      print("Something went wrong");
+      print(e);
+      return null;
     }
-    
   }
 
   Future<String> readCounter() async {
@@ -91,7 +91,8 @@ class PasswordContents {
   String getPasswordContents() {
     try {
       return storage.getItem('TempPass');
-    } on Exception catch (e, s) {
+    } on Exception catch (e) {
+      print(e);
       return "password";
     }
   }
@@ -142,8 +143,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-   
-
     AdDisplayInfo().readCounter().then((val) {
       print("DEBUG - CONTENTS IN DATA FILE - " + val);
       if (val == "1") {
@@ -204,7 +203,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   color: Colors.red,
                   onPressed: () {
-                    
                     String code = PasswordContents().getPasswordContents();
                     if (code == "" || code == null) {
                       Toast.show(
@@ -230,9 +228,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.red,
                   onPressed: () {
                     String code = "";
-                 
+
                     code = PasswordContents().getPasswordContents();
-                  
+
                     if (code == "" || code == null) {
                       Toast.show(
                           "You need to enter a password to do this!", context,
@@ -256,7 +254,6 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Colors.blueAccent,
         onPressed: () {
           setState(() {
-
             RewardedVideoAd.instance.show();
           });
         },

@@ -16,7 +16,6 @@ class _PassGuessAlgorithmsState extends State<PassGuessAlgorithms> {
   Timer maintimer;
   String computedGuess = "";
   String actualPassword = PasswordContents().getPasswordContents();
-  @override
   Widget fancyText(String text) {
     return Text(
       text,
