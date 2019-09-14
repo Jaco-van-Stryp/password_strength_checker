@@ -29,7 +29,7 @@ class ImprovePass extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 fancyText(qualityTest()),
-                Divider(color: Colors.white),
+                Padding(padding: EdgeInsets.all(4.0)),
                 RaisedButton(
                   textColor: Colors.white,
                   color: Colors.redAccent,
@@ -37,7 +37,8 @@ class ImprovePass extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                )
+                ),
+                Padding(padding: EdgeInsets.all(48.0)),
               ],
             ),
           ],
@@ -50,7 +51,7 @@ class ImprovePass extends StatelessWidget {
     double strength = estimatePasswordStrength(password);
     double temp = strength * 100;
     String quality =
-        "\nYour Selected Password: " + password + "\n\nQuality Test:\n\n";
+        "\nYour Selected Password: " + password + "\n\nQuality Test - Scroll Down For More!\n\n";
     if (temp.toInt() >= 85) {
       quality += "\nThis password Has A Strength Rating of " +
           temp.toInt().toString() +

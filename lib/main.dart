@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:password_strength/password_strength.dart';
 import 'package:random_string/random_string.dart';
@@ -6,6 +8,9 @@ import 'PassGuessAlgorithms.dart';
 import 'ImprovePass.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:toast/toast.dart';
+import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -15,7 +20,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
       title: 'Password Strength Checker',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -34,6 +38,49 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+class AdDisplayInfo {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    print('DEBUG - PATH LOCATED - $path/counter.txt');
+    return File('$path/counter.txt');
+  }
+
+  Future<File> writeCounter(int counter) async {
+    try {
+final file = await _localFile;
+
+    // Write the file.
+    print("DEBUG - Successfully Written To file");
+    file.writeAsString('$counter');
+    } on Exception catch(e)
+    {
+      print ("Something went wrong");
+    }
+    
+  }
+
+  Future<String> readCounter() async {
+    try {
+      final file = await _localFile;
+      // Read the file.
+      String contents = await file.readAsString();
+      print("DEBUG - Successfully read file - " + contents);
+      return (contents);
+    } catch (e) {
+      // If encountering an error, return 0.
+      print("DEBUG - Failed To read file");
+
+      return "0";
+    }
+  }
+}
+
 class PasswordContents {
   final LocalStorage storage = new LocalStorage('TempPass');
 
@@ -42,13 +89,10 @@ class PasswordContents {
   }
 
   String getPasswordContents() {
-    try
-    {
-    return storage.getItem('TempPass');
-
-    } catch (e)
-    {
-        return "";
+    try {
+      return storage.getItem('TempPass');
+    } on Exception catch (e, s) {
+      return "password";
     }
   }
 }
@@ -56,7 +100,7 @@ class PasswordContents {
 class _MyHomePageState extends State<MyHomePage> {
   //Declarations
   var passClass = PasswordContents();
-  String adText = "Disable Ad's & Unlock Additional Features [Free]";
+  String adText = "Permenantly Unlock Additional Features [Free]";
   int totalClicks = 10;
   String passwordStrength = " ";
   String genPass = "";
@@ -98,6 +142,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+   
+
+    AdDisplayInfo().readCounter().then((val) {
+      print("DEBUG - CONTENTS IN DATA FILE - " + val);
+      if (val == "1") {
+        setState(() {
+          rewarded = true;
+        });
+        print("DEBUG - REWARDED USER WITH REWARD PROGRAM");
+      } else {
+        print("DEBUG - FAILED TO VALIDATE REWARD PROGRAM");
+      }
+    });
+
     PasswordContents().setPasswordContents("password");
 
     FirebaseAdMob.instance
@@ -110,11 +168,10 @@ class _MyHomePageState extends State<MyHomePage> {
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       if (event == RewardedVideoAdEvent.rewarded) {
-        rewarded = true;
+        AdDisplayInfo().writeCounter(1);
         setState(() {
           // Here, apps should update state to reflect the reward.
-          adText = "";
-          clearAds();
+          adText = "Unlock Features";
         });
       }
     };
@@ -131,13 +188,11 @@ class _MyHomePageState extends State<MyHomePage> {
     if (rewarded == true) {
       return Column(
         children: <Widget>[
-          Divider(color: Colors.white),
           Text(
             "Additional Features",
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 25),
           ),
-          Divider(color: Colors.white),
           Row(
             children: <Widget>[
               Expanded(
@@ -149,10 +204,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   color: Colors.red,
                   onPressed: () {
-                    if (PasswordContents().getPasswordContents() == "") {
+                    
+                    String code = PasswordContents().getPasswordContents();
+                    if (code == "" || code == null) {
                       Toast.show(
                           "You need to enter a password to do this!", context,
-                          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                          duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
                     } else {
                       navigateToPageGuesser(context);
                     }
@@ -172,15 +229,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   color: Colors.red,
                   onPressed: () {
-                    if(PasswordContents().getPasswordContents() == "")
-                    {
-                       Toast.show(
+                    String code = "";
+                 
+                    code = PasswordContents().getPasswordContents();
+                  
+                    if (code == "" || code == null) {
+                      Toast.show(
                           "You need to enter a password to do this!", context,
-                          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-                    }
-                    else{
-                    navigateToPageImprove(context);
-
+                          duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+                    } else {
+                      navigateToPageImprove(context);
                     }
                   },
                 ),
@@ -198,8 +256,9 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Colors.blueAccent,
         onPressed: () {
           setState(() {
+            rewarded = true;
+
             RewardedVideoAd.instance.show();
-            adText = "Unlock Features";
           });
         },
       );
@@ -222,7 +281,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -254,7 +312,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Text(
                 passwordStrength,
-                style: TextStyle(fontSize: 35),
+                style: TextStyle(fontSize: 25),
                 textAlign: TextAlign.center,
               ),
               Divider(
@@ -271,7 +329,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     genPass = randomString(16);
                   }),
                   totalClicks = totalClicks - 1,
-                  if (totalClicks <= 0 && rewarded == false)
+                  if (totalClicks <= 0)
                     {
                       createInterstitialAd()
                         ..load()
@@ -280,18 +338,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     }
                 },
               ),
-              Divider(
-                color: Colors.white,
-              ),
               SelectableText(
                 genPass,
-                style: TextStyle(fontSize: 35),
+                style: TextStyle(fontSize: 25),
                 textAlign: TextAlign.center,
               ),
-              Divider(
-                color: Colors.white,
-              ),
               rewardAdButton(),
+              Padding(padding: EdgeInsets.all(48.0)),
             ],
           ),
         ],
@@ -334,7 +387,7 @@ class _MyHomePageState extends State<MyHomePage> {
       passwordStrength = "Your password is considered " +
           power +
           " (" +
-          temp.toInt().toString() +
+          temp.toStringAsFixed(2) +
           "% Strength)";
     });
   }

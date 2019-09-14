@@ -26,11 +26,7 @@ class _PassGuessAlgorithmsState extends State<PassGuessAlgorithms> {
   }
 
   Widget fancyDivider() {
-    return Divider(
-      height: 10,
-      color: Colors.white,
-      thickness: 3,
-    );
+    return Padding(padding: EdgeInsets.all(8.0));
   }
 
   String guessing = "";
@@ -42,10 +38,11 @@ class _PassGuessAlgorithmsState extends State<PassGuessAlgorithms> {
         title: Text('Attempt To Guess Password'),
         backgroundColor: Colors.redAccent,
       ),
-      body: Center(
-        child: Column(
+      body: ListView(children: <Widget>[
+        Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            fancyDivider(),
             fancyText("We Will Try To Guess the password: " +
                 actualPassword +
                 "\nBy Generating Random Characters\n\nWarning - Long passwords Will take a very long time!"),
@@ -55,7 +52,6 @@ class _PassGuessAlgorithmsState extends State<PassGuessAlgorithms> {
               color: Colors.redAccent,
               child: Text('Start Guessing'),
               onPressed: () {
-                guesses = 0;
                 updateState();
               },
             ),
@@ -68,13 +64,16 @@ class _PassGuessAlgorithmsState extends State<PassGuessAlgorithms> {
               onPressed: () {
                 Navigator.pop(context);
                 busy = false;
-                maintimer.cancel();
+                try {
+                  maintimer.cancel();
+                } catch (e) {}
               },
               color: Colors.greenAccent,
-            )
+            ),
+            Padding(padding: EdgeInsets.all(48.0)),
           ],
         ),
-      ),
+      ]),
     );
   }
 
@@ -82,6 +81,7 @@ class _PassGuessAlgorithmsState extends State<PassGuessAlgorithms> {
   String longList = LocalPasses().getlocal();
   void updateState() {
     if (busy == false) {
+      guesses = 0;
       busy = true;
       if (longList.contains(actualPassword)) {
         guesses++;
@@ -98,7 +98,7 @@ class _PassGuessAlgorithmsState extends State<PassGuessAlgorithms> {
       }
     } else {
       Toast.show("Already Guessing...", context,
-          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+          duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
     }
   }
 
