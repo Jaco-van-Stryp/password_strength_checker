@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:password_strength/password_strength.dart';
+import 'package:password_strength_checker/PasswordShuffle.dart';
 import 'package:random_string/random_string.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'PassGuessAlgorithms.dart';
@@ -11,6 +12,7 @@ import 'package:toast/toast.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'PasswordShuffle.dart';
 
 void main() => runApp(MyApp());
 
@@ -122,6 +124,11 @@ class _MyHomePageState extends State<MyHomePage> {
         context, MaterialPageRoute(builder: (context) => ImprovePass()));
   }
 
+  Future navigateToPasswordManiplulation(context) async {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => PasswordShuffle()));
+  }
+
   BannerAd createBannerAd() {
     return BannerAd(
         adUnitId: 'ca-app-pub-2887967406057408/4600454367',
@@ -222,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                 child: MaterialButton(
                   child: Text(
-                    "Password Rating Test",
+                    "Password Quality Test",
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
                   ),
@@ -238,6 +245,32 @@ class _MyHomePageState extends State<MyHomePage> {
                           duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
                     } else {
                       navigateToPageImprove(context);
+                    }
+                  },
+                ),
+              )
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: MaterialButton(
+                  child: Text(
+                    "Password Manipulation",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  color: Colors.red,
+                  onPressed: () {
+                    String code = "";
+
+                    code = PasswordContents().getPasswordContents();
+                    if (code == "" || code == null) {
+                      Toast.show(
+                          "You need to enter a password to do this!", context,
+                          duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+                    } else {
+                      navigateToPasswordManiplulation(context);
                     }
                   },
                 ),
