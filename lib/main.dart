@@ -256,7 +256,6 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Colors.blueAccent,
         onPressed: () {
           setState(() {
-            rewarded = true;
 
             RewardedVideoAd.instance.show();
           });
