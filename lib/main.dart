@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:password_strength/password_strength.dart';
@@ -407,13 +408,19 @@ class _MyHomePageState extends State<MyHomePage> {
               Padding(padding: EdgeInsets.all(8.0)),
               MaterialButton(
                 child: Text(
-                  "Generate A Strong Password",
+                  "Generate A Strong Password & Pin",
                   style: TextStyle(color: Colors.white),
                 ),
                 color: Colors.blueAccent,
                 onPressed: () => {
                   setState(() {
-                    genPass = randomString(16);
+                    Random r = new Random();
+                    int smartNum(int min, int max) =>
+                        min + r.nextInt(max - min);
+                    genPass = "Pass: " +
+                        randomString(16) +
+                        "\nPin: " +
+                        listDatabasePins[smartNum(7000, 9999)].toString();
                   }),
                   totalClicks = totalClicks - 1,
                   if (totalClicks <= 0)
