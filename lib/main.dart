@@ -100,6 +100,49 @@ class PasswordContents {
   }
 }
 
+class UserRatingManager {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    print('DEBUG - PATH LOCATED - $path/counter.txt');
+    return File('$path/reviewManager.txt');
+  }
+
+  Future<File> writeCounter(int counter) async {
+    try {
+      final file = await _localFile;
+
+      // Write the file.
+      print("DEBUG - Successfully Written To file");
+      return file.writeAsString('$counter');
+    } on Exception catch (e) {
+      print("Something went wrong");
+      print(e);
+      return null;
+    }
+  }
+
+  Future<String> readCounter() async {
+    try {
+      final file = await _localFile;
+      // Read the file.
+      String contents = await file.readAsString();
+      print("DEBUG - Successfully read file - " + contents);
+      return (contents);
+    } catch (e) {
+      // If encountering an error, return 0.
+      print("DEBUG - Failed To read file");
+
+      return "0";
+    }
+  }
+}
+
 class _MyHomePageState extends State<MyHomePage> {
   //Declarations
   var passClass = PasswordContents();
@@ -189,6 +232,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
     super.initState();
   }
+
+  //STORE WIDGET
+
+  //STORE WIDGET
+
+  String appID = "";
+  String output = "";
 
   Widget rewardAdButton() {
     //Creating Additional Features To The App.
