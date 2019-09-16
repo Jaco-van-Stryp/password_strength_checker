@@ -106,6 +106,8 @@ class _PassGuessAlgorithmsState extends State<PassGuessAlgorithms> {
     String randomNum = randomNumeric(actualPassword.length);
     String randomAlph = randomAlphaNumeric(actualPassword.length);
     String randomLet = randomAlpha(actualPassword.length);
+    String randomLetL = randomAlpha(actualPassword.length).toLowerCase();
+    String randomLetH = randomAlpha(actualPassword.length).toUpperCase();
 
     setState(() {
       guessing = "Guessing - " + random;
@@ -122,7 +124,9 @@ class _PassGuessAlgorithmsState extends State<PassGuessAlgorithms> {
     if (random == actualPassword ||
         randomNum == actualPassword ||
         randomAlph == actualPassword ||
-        randomLet == actualPassword) {
+        randomLet == actualPassword ||
+        randomLetL == actualPassword ||
+        randomLetH == actualPassword) {
       maintimer.cancel();
       busy = false;
       setState(() {

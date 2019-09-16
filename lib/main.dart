@@ -13,6 +13,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'PasswordShuffle.dart';
+import 'CommonPin.dart';
 
 void main() => runApp(MyApp());
 
@@ -152,6 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String genPass = "";
   int passwordCrackingAttempts = 0;
   bool rewarded;
+  String databasePin = "";
 
   BannerAd _bannerAd;
   InterstitialAd _interstitialAd;
@@ -191,8 +193,12 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
+  List<String> listDatabasePins = new List<String>();
   @override
   void initState() {
+    databasePin = CPin().getListOfPins();
+    listDatabasePins = databasePin.split(";");
+
     AdDisplayInfo().readCounter().then((val) {
       print("DEBUG - CONTENTS IN DATA FILE - " + val);
       if (val == "1") {
@@ -369,11 +375,16 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              Divider(color: Colors.white),
+              Padding(padding: EdgeInsets.all(8.0)),
               Text(
-                'Enter a password',
+                'Enter a password / Pin',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.display1,
+              ),
+              Text(
+                "We do not collect anything you enter.",
+                style: TextStyle(fontSize: 15),
+                textAlign: TextAlign.center,
               ),
               Divider(
                 color: Colors.white,
@@ -387,17 +398,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 autofocus: true,
                 style: TextStyle(fontSize: 25),
               ),
-              Divider(
-                color: Colors.white,
-              ),
+              Padding(padding: EdgeInsets.all(8.0)),
               Text(
                 passwordStrength,
                 style: TextStyle(fontSize: 25),
                 textAlign: TextAlign.center,
               ),
-              Divider(
-                color: Colors.white,
-              ),
+              Padding(padding: EdgeInsets.all(8.0)),
               MaterialButton(
                 child: Text(
                   "Generate A Strong Password",
@@ -437,38 +444,85 @@ class _MyHomePageState extends State<MyHomePage> {
     keywords: <String>['Charity', 'Donate'],
   );
   void refreshPasswordStrength(String input) {
-    double strength = estimatePasswordStrength(input);
+    if (input.length == 4) {
+      int score = 0;
+      for (int i = 0; i < input.length; i++) {
+        if (ImprovePass().isNumeric(input[i]) == true) {
+          score++;
+        }
+      }
 
-    String power;
-    if (strength == 1) {
-      power = "Uncrackable";
-    } else if (strength < 0.1) {
-      power = "Terrible!";
-    } else if (strength < 0.3) {
-      power = "Weak!";
-    } else if (strength < 0.5) {
-      power = "Okayish";
-    } else if (strength < 0.6) {
-      power = "Okay";
-    } else if (strength < 0.7) {
-      power = "Decent";
-    } else if (strength < 0.8) {
-      power = "Good!";
-    } else if (strength < 0.9) {
-      power = "Great!";
-    } else if (strength < 0.95) {
-      power = "Perfect!";
+      if (score == 4) {
+        //!Pin code Test
+        int index = listDatabasePins.indexOf(input);
+        index = index;
+        double strength = index / 10000;
+
+        String power;
+
+        if (strength < 0.2) {
+          power = "Terrible!";
+        } else if (strength < 0.3) {
+          power = "Used By Too Many People";
+        } else if (strength < 0.4) {
+          power = "Commonly Used By Other People";
+        } else if (strength < 0.5) {
+          power = "Ocationally Used By Other People";
+        } else if (strength < 0.6) {
+          power = "Sometimes Used By Other People";
+        } else if (strength < 0.7) {
+          power = "Rarely Used By Other People";
+        } else if (strength < 0.8) {
+          power = "Almost Never Used By Other People";
+        } else if (strength < 0.9) {
+          power = "Extreamly Rarely Used By Other People";
+        } else {
+          power = "Excelent!";
+        }
+        double temp = strength * 100;
+        setState(() {
+          passwordStrength = "Your Pin Is " +
+              power +
+              " (" +
+              temp.toStringAsFixed(2) +
+              "% of Pin Codes Are Weaker Than This)";
+        });
+      } //!End Pin Code Test
     } else {
-      power = "Excelent!";
-    }
-    double temp = strength * 100;
+      //!Start Password Test
+      double strength = estimatePasswordStrength(input);
 
-    setState(() {
-      passwordStrength = "Your password is considered " +
-          power +
-          " (" +
-          temp.toStringAsFixed(2) +
-          "% Strength)";
-    });
+      String power;
+      if (strength == 1) {
+        power = "Uncrackable";
+      } else if (strength < 0.1) {
+        power = "Terrible!";
+      } else if (strength < 0.3) {
+        power = "Weak!";
+      } else if (strength < 0.5) {
+        power = "Okayish";
+      } else if (strength < 0.6) {
+        power = "Okay";
+      } else if (strength < 0.7) {
+        power = "Decent";
+      } else if (strength < 0.8) {
+        power = "Good!";
+      } else if (strength < 0.9) {
+        power = "Great!";
+      } else if (strength < 0.95) {
+        power = "Perfect!";
+      } else {
+        power = "Excelent!";
+      }
+      double temp = strength * 100;
+
+      setState(() {
+        passwordStrength = "Your password is considered " +
+            power +
+            " (" +
+            temp.toStringAsFixed(2) +
+            "% Strength)";
+      });
+    }
   }
 }
