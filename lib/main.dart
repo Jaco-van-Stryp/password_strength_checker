@@ -197,6 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> listDatabasePins = new List<String>();
   @override
   void initState() {
+    rewarded = true; //TODO Remove this
     databasePin = CPin().getListOfPins();
     listDatabasePins = databasePin.split(";");
 
@@ -398,6 +399,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 autofocus: true,
                 style: TextStyle(fontSize: 25),
+                decoration: new InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black54, width: 2.5),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black54, width: 2.5),
+                  ),
+                  hintText: '[Type Here]',
+                ),
               ),
               Padding(padding: EdgeInsets.all(8.0)),
               Text(
