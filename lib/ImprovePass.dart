@@ -64,7 +64,7 @@ class ImprovePass extends StatelessWidget {
           "% which is Below average ❌ \nTry adding more random characters and numbers";
     }
 
-    if (password.length >= 16) {
+    if (password.length >= 10) {
       quality += "\n\nThis password Is " +
           password.length.toString() +
           " characters long, which is at or above the recommended mark! ✔️";
@@ -72,9 +72,9 @@ class ImprovePass extends StatelessWidget {
     } else {
       quality += "\n\nThis password Is " +
           password.length.toString() +
-          " characters long, which is below the recommended mark of 16! ❌ \nTry adding something random to the password, for example: \n" +
+          " characters long, which is below the recommended mark of 10! ❌ \nTry adding something random to the password, for example: \n" +
           password +
-          randomString(16 - password.length);
+          randomString(10 - password.length);
     }
     if (temp.toInt() == 0) {
       quality +=

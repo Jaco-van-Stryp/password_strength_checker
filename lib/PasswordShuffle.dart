@@ -97,7 +97,8 @@ class _PasswordShuffleState extends State<PasswordShuffle> {
             fancyDivider(),
             fancyText(totalNumbers),
             fancyDivider(),
-
+            fancyText(secondsToWords(getTotalSecondsCrackTime(actualPassword))),
+            fancyDivider(),
             Padding(padding: EdgeInsets.all(48.0)), //* Required For Banner Ad
           ],
         ),
@@ -193,7 +194,7 @@ class _PasswordShuffleState extends State<PasswordShuffle> {
       rating++;
     }
 
-    if (password.length >= 16) {
+    if (password.length >= 10) {
       rating++;
     }
 
@@ -241,7 +242,114 @@ class _PasswordShuffleState extends State<PasswordShuffle> {
     return numbers;
   }
 
-  //End methods
+  double getTotalSecondsCrackTime(String str) {
+    double total = toThePowerOf(str.length.toDouble(), 93) / 11344618;
+
+    print("TOTAL - " + total.toString());
+    return (total);
+  }
+
+  num toThePowerOf(double val1, double val2) {
+    double total = val1;
+    for (int i = 0; i < val2; i++) {
+      total = total + (total * val1);
+      print("TOTAL CALC " + total.toString());
+    }
+    return total;
+  }
+
+  String secondsToWords(double seconds) {
+    double finalSeconds = seconds;
+    int years = 0;
+    int months = 0;
+    int days = 0;
+    int hours = 0;
+    int minutes = 0;
+    int decades = 0;
+    double temp = 0;
+    print("TOTAL SECONDS - " + seconds.toString());
+
+    temp = finalSeconds / 31556952;
+    years = temp.toInt();
+    temp = finalSeconds / 2629746;
+    months = temp.toInt() - (years * 12);
+    temp = finalSeconds / 86400;
+    days = temp.toInt() - (months * 31);
+    /*
+    while (finalSeconds > 31556952) {
+      years++;
+      finalSeconds = seconds - 31556952;
+      print("Added Year");
+    }
+    while (finalSeconds > 2629746) {
+      months++;
+      finalSeconds = finalSeconds - 2629746;
+      print("Added Seconds");
+    }
+    while (finalSeconds > 86400) {
+      days++;
+      finalSeconds = finalSeconds - 86400;
+    }
+    print("Added Days");
+
+    while (finalSeconds > 3600) {
+      hours++;
+      finalSeconds = finalSeconds - 3600;
+    }
+    print("Added Hours");
+
+    while (finalSeconds > 60) {
+      minutes++;
+      finalSeconds = finalSeconds - 60;
+    }
+    print("Added Minutes");
+
+    while (years > 10) {
+      decades++;
+      years = years - 10;
+      print("Added Decades");
+    }
+    */
+    String constructString = "In ";
+    if (decades != 0) {
+      constructString += decades.toString() + " Decades ";
+    }
+    if (years != 0) {
+      constructString += years.toString() + " Years ";
+    }
+    if (months != 0) {
+      constructString += months.toString() + " Months ";
+    }
+    if (days != 0) {
+      constructString += days.toString() + " Days ";
+    }
+    if (hours != 0) {
+      constructString += hours.toString() + " Hours ";
+    }
+    if (minutes != 0) {
+      constructString += minutes.toString() + " Minutes ";
+    }
+    if (seconds != 0) {
+      constructString += seconds.toString() + " Seconds ";
+    }
+    if (constructString == "In ") {
+      constructString = "Instantly";
+    }
+    return "Your Password Will Be Cracked By A Brute Force Attack " +
+        constructString;
+  }
+
+  num pow(int x, int y) {
+    if (y == 0) {
+      return 1;
+    }
+
+    if (y == 1) {
+      return x;
+    }
+
+    return pow(x, y - 1) * x;
+  }
 
   bool isNumeric(String str) {
     if (str == null) {
@@ -249,4 +357,7 @@ class _PasswordShuffleState extends State<PasswordShuffle> {
     }
     return double.tryParse(str) != null;
   }
+
+  //End methods
+
 }
