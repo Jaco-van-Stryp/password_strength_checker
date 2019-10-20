@@ -197,7 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> listDatabasePins = new List<String>();
   @override
   void initState() {
-    rewarded = true; //TODO Remove this
+    rewarded = false;
     databasePin = CPin().getListOfPins();
     listDatabasePins = databasePin.split(";");
 

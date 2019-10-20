@@ -97,8 +97,8 @@ class _PasswordShuffleState extends State<PasswordShuffle> {
             fancyDivider(),
             fancyText(totalNumbers),
             fancyDivider(),
-            fancyText(secondsToWords(getTotalSecondsCrackTime(actualPassword))),
-            fancyDivider(),
+            // fancyText(secondsToWords(getTotalSecondsCrackTime(actualPassword))),
+            // fancyDivider(),
             Padding(padding: EdgeInsets.all(48.0)), //* Required For Banner Ad
           ],
         ),
